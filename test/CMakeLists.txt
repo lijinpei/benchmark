@@ -157,6 +157,7 @@ if (BENCHMARK_ENABLE_GTEST_TESTS)
   endmacro()
 
   add_gtest(statistics_test)
+  add_gtest(fixture_init_gtest)
 endif(BENCHMARK_ENABLE_GTEST_TESTS)
 
 

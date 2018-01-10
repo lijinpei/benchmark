@@ -516,20 +516,22 @@ class FixtureBenchmark : public Benchmark {
 }  // namespace
 }  // end namespace internal
 
-internal::Benchmark* RegisterBenchmark(const char* name, internal::Function* func) {
+internal::Benchmark* RegisterBenchmark(const char* name,
+                                       internal::Function* func) {
   auto* p_benchmark = new internal::FunctionBenchmark(name, func);
-  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(std::unique_ptr<internal::Benchmark>(p_benchmark));
+  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(
+      std::unique_ptr<internal::Benchmark>(p_benchmark));
   return p_benchmark;
 }
 
 namespace internal {
 
-Benchmark* RegisterBenchmark(const char *name, FixtureCreator* creator) {
+Benchmark* RegisterBenchmark(const char* name, FixtureCreator* creator) {
   auto* p_benchmark = new FixtureBenchmark(name, creator);
-  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(std::unique_ptr<internal::Benchmark>(p_benchmark));
+  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(
+      std::unique_ptr<internal::Benchmark>(p_benchmark));
   return p_benchmark;
 }
-
 }
 void ClearRegisteredBenchmarks() {
   internal::BenchmarkFamilies::GetInstance()->ClearBenchmarks();

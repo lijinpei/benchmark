@@ -465,74 +465,8 @@ int Benchmark::ArgsCnt() const {
 
 void Benchmark::Init() {}
 
-namespace {
-
-//=============================================================================//
-//                            FunctionBenchmark
-//=============================================================================//
-
-// The class used to hold all Benchmarks created from static function.
-// (ie those created using the BENCHMARK(...) macros.
-class FunctionBenchmark : public Benchmark {
- public:
-  FunctionBenchmark(const char* name, Function* func)
-      : Benchmark(name), func_(func) {}
-
-  void Run(State& st) override { func_(st); }
-
- private:
-  Function* func_;
-};
-
-//=============================================================================//
-//                            FixtureBenchmark
-//=============================================================================//
-//
-// The class used to hold all Benchmarks created from fixture.
-// (ie those created using the BENCHMARK_F(...) macros.
-class FixtureBenchmark : public Benchmark {
- public:
-  FixtureBenchmark(const char* name, FixtureCreator* creator)
-      : Benchmark(name), creator_(creator) {}
-
-  void Run(State& st) override {
-    fixture_->SetUp(st);
-    fixture_->BenchmarkCase(st);
-    fixture_->TearDown(st);
-  }
-
- private:
-  void Init() override {
-    if (!fixture_) {
-      fixture_.reset(creator_());
-    }
-  }
-
-  std::unique_ptr<Fixture> fixture_;
-  FixtureCreator* creator_;
-  friend BenchmarkFamilies;
-};
-
-}  // namespace
 }  // end namespace internal
 
-internal::Benchmark* RegisterBenchmark(const char* name,
-                                       internal::Function* func) {
-  auto* p_benchmark = new internal::FunctionBenchmark(name, func);
-  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(
-      std::unique_ptr<internal::Benchmark>(p_benchmark));
-  return p_benchmark;
-}
-
-namespace internal {
-
-Benchmark* RegisterBenchmark(const char* name, FixtureCreator* creator) {
-  auto* p_benchmark = new FixtureBenchmark(name, creator);
-  internal::BenchmarkFamilies::GetInstance()->AddBenchmark(
-      std::unique_ptr<internal::Benchmark>(p_benchmark));
-  return p_benchmark;
-}
-}
 void ClearRegisteredBenchmarks() {
   internal::BenchmarkFamilies::GetInstance()->ClearBenchmarks();
 }

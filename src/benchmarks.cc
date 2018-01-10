@@ -16,6 +16,7 @@
 
 #include <memory>
 #include "benchmark/benchmark.h"
+#include "benchmark_api_internal.h"
 
 namespace {
 using namespace benchmark;
